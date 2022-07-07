@@ -22,19 +22,29 @@ int main()
 
 long long int maxSum(int arr[], int n)
 {
-    int sum = 0;
- 
-    // Sorting the array.
-    sort(arr, arr + n);
- 
-    // Subtracting a1, a2, a3,....., a(n/2)-1, an/2
-    // twice and adding a(n/2)+1, a(n/2)+2, a(n/2)+3,.
-    // ...., an - 1, an twice.
-    for (int i = 0; i < n/2; i++)
-    {
-        sum -= (2 * arr[i]);
-        sum += (2 * arr[n - i - 1]);
+    vector<int> a(n);
+    sort(arr,arr+n);
+    int i = 0 , j = n-1;
+    
+    int k = 0;
+    while(i<=j){
+        
+        
+        a[k++] = arr[i++];
+        if(i>=j and k==n) break;
+        a[k++] = arr[j--];
+        
     }
- 
+    
+    // for(auto x : a){
+    //     cout<<x<<" ";
+    // }
+    // cout<<"\n";
+    
+    long long int sum = 0;
+    for(int i = 0 ; i < n ; i++){
+        int ans = (abs(a[i%n]-a[(i+1)%n]));
+        sum += ans;
+    }
     return sum;
 }
