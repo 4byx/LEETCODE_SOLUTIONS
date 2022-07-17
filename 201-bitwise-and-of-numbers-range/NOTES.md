@@ -1,0 +1,1 @@
+only bits which are changed are 0 else copy same
