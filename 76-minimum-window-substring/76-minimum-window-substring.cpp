@@ -31,13 +31,6 @@ public:
             }
             j++;
         }
-        i--;
-        if(i<0) return "";
-        j--;
-        if(j-i+1 < mini){
-            mini = j-i+1;
-            p = {i,j};
-        }
         if(mini == INT_MAX) return "";
         string ans = s.substr(p.first,p.second-p.first+1);
         return ans;
