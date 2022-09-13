@@ -1,30 +1,48 @@
 class Solution {
-public:
-    map<tuple<int,int,int>,long long> m;
-    int helper(int i , vector<vector<int>> &events , int k 
-               , int n , int end){
-        if(i==n or k==0){
-            return 0;
+    int get_idx(int st , int end , vector<vector<int>> &events , int target){
+        int idx = events.size() , left = st , right = end;
+        
+        while(left <= right){
+            int mid = left + (right - left)/2;
+            
+            if(events[mid][0] > target){
+                idx = mid;
+                right = mid - 1;
+            }else
+                left = mid + 1;
         }
         
-        if(m.count({i,k,end})){
-            return m[{i,k,end}];
-        }
-        int ans = INT_MIN;
-        if(events[i][0] > end){
-            ans = max(ans,events[i][2] + helper(i+1,events,k-1,n,events[i][1]));
-        }
-        ans = max(ans,helper(i+1,events,k,n,end));
-        return m[{i,k,end}] = ans;
+        return idx;
     }
     
-    int maxValue(vector<vector<int>>& events, int k) {
-        int n = events.size();
-        sort(events.begin(),events.end(),[](vector<int> &a , vector<int> &b){
-            return a[0] < b[0];
-        });
+    int get_mx_val(int idx , vector<vector<int>> &events , int k , vector<vector<int>> &dp){
+        if(idx == events.size())
+            return 0;
         
-        int ans = helper(0,events,k,n,-1);
-        return ans;
+        int case1 = 0 , case2 = 0;
+        
+        if(dp[k][idx] != -1)
+            return dp[k][idx];
+        
+        // to take
+        if(k > 0){
+           int next_idx = get_idx(idx + 1 , events.size() - 1 , events , events[idx][1]);
+           case1 += events[idx][2] + get_mx_val(next_idx , events , k - 1 , dp);
+        }
+        
+        // to no take
+        case2 = get_mx_val(idx + 1 , events , k , dp);
+        
+        return dp[k][idx] = max(case1 , case2);
+    }
+    
+public:
+    int maxValue(vector<vector<int>>& events, int k) {
+        sort(events.begin() , events.end());
+        int n = events.size();
+        
+        vector<vector<int>> dp(k + 1 , vector<int>(n + 1 , -1));
+        
+        return get_mx_val(0 , events , k , dp);
     }
 };
